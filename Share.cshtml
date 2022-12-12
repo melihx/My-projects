@@ -1,0 +1,50 @@
+﻿@model ReadABook.ViewModels.Books.ShareVM
+@using ReadABook.Entities
+@{
+    this.Layout = "/Views/Shared/_Site.cshtml";
+    ViewData["title"] = "SHARE BOOKS";
+}
+<hr />
+<h2>Share @Model.Book.Title</h2>
+<hr />
+<div class="grid">
+    <form action="/Books/Share" method="post">
+        <input type="hidden" name="BookId" value="@Model.Book.Id" />
+        @(Model.Readers.Count <= 0 ? "No Users to Share with" : "")
+        @foreach (User item in Model.Readers)
+        {
+            <div class="row">
+                <div class="col-3">
+                    <input type="checkbox" name="ReaderIds" value="@item.Id" />
+                    <span>@item.Username ( @item.FirstName @item.LastName )</span>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-2">
+                <input type="submit" value="Share" />
+            </div>
+        </div>
+    </form>
+    <hr />
+    <h2>Shared with:</h2>
+    <hr />
+    <div class="row">
+        <div class="col-2">Username</div>
+        <div class="col-2">First Name</div>
+        <div class="col-2">Last Name</div>
+        <div class="col-2"></div>
+    </div>
+    @foreach (BookToRead item in Model.Shares)
+    {
+        <div class="row">
+            <div class="col-2">@item.Reader.Username</div>
+            <div class="col-2">@item.Reader.FirstName</div>
+            <div class="col-2">@item.Reader.LastName</div>
+            <div class="col-2">
+                <a href="/Readers/RevokeShare?id=@item.Id"
+                   onclick="return confirm('Revoke Access?');">revoke</a>
+            </div>
+        </div>
+    }
+</div>

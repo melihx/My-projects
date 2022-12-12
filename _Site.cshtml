@@ -1,0 +1,40 @@
+﻿@using ReadABook.Entities;
+@using ReadABook.ExtentionMethods;
+@{
+    User loggedUser = this.ViewContext.HttpContext.Session.GetObject<User>("loggedUser");
+}
+<html>
+<head>
+    <title>@ViewData["title"]</title>
+    <link href="~/site.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="navbar">
+        <div class="container">
+            <div class="header">
+                <h1 class="title">Read a book</h1>
+            </div>
+            <div>
+                <ul class="nav">
+                    <li><a href="/Home/Index">Home</a></li>
+                    @if (loggedUser != null)
+                    {
+                        <li><a href="/Users/Index">Users</a></li>
+                        <li><a href="/Books/Index">Books</a></li>
+                        <li><a href="/Home/Logout">Logout</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="/Home/Login">Login</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <div>
+        @RenderBody()
+    </div>
+</body>
+</html>
