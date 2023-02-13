@@ -1,0 +1,60 @@
+﻿@model ReadABook.ViewModels.Books.EditVM
+@{
+    this.Layout = "/Views/Shared/_Site.cshtml";
+    ViewData["title"] = "EDIT BOOK";
+}
+
+<fieldset class="space">
+    <legend>Edit Book</legend>
+    <form action="/Books/Edit" method="post">
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.ReaderId)
+        <div class="grid">
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Title)
+                </div>
+                <div class="col-2">
+                    @Html.TextBoxFor(m => m.Title)
+                </div>
+                <div class="col-2">
+                    @Html.ValidationMessageFor(m => m.Title)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Author)
+                </div>
+                <div class="col-2">
+                    @Html.TextBoxFor(m => m.Author)
+                </div>
+                <div class="col-2">
+                    @Html.ValidationMessageFor(m => m.Author)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Summary)
+                </div>
+                <div class="col-2">
+                    @Html.TextAreaFor(m => m.Summary)
+                </div>
+                <div class="col-2">
+                    @Html.ValidationMessageFor(m => m.Summary)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    @Html.ValidationMessage("summaryError")
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-2">
+                    <input type="submit" class="" value="Save" />
+                    <a href="/Books/Index" class="">Back</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</fieldset>

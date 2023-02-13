@@ -1,0 +1,132 @@
+﻿@model ReadABook.ViewModels.Books.IndexVM
+@using ReadABook.Entities
+@using ReadABook.ExtentionMethods;
+@{
+    this.Layout = "/Views/Shared/_Site.cshtml";
+    ViewData["title"] = "BOOKS";
+    User loggedUser = this.ViewContext.HttpContext.Session.GetObject<User>("loggedUser");
+}
+
+<div class="space">
+    <form action="/Books/Index" method="get">
+        @Html.HiddenFor(m => m.Pager.ItemsPerPage)
+        <div class="grid">
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Filter.Title)
+                </div>
+                <div class="col-2">
+                    @Html.TextBoxFor(m => m.Filter.Title)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    @Html.LabelFor(m => m.Filter.Author)
+                </div>
+                <div class="col-2">
+                    @Html.TextBoxFor(m => m.Filter.Author)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <input class="right" type="submit" value="Filter" />
+                    <a class="right" href="/Books/Index?Pager.ItemsPerPage=@Model.Pager.ItemsPerPage">Clear</a>
+                </div>
+            </div>
+        </div>
+    </form>
+    @if (loggedUser.Username == "admin")
+    {
+        <a href="/Books/Create">Add</a>
+    }
+    <div class="grid">
+        @if (loggedUser.Username != "admin")
+        {
+            <hr />
+            <div><h3>Recommended Books:</h3></div>
+        }
+
+        @foreach (Book item in Model.Books)
+        {
+            <div class="box">
+                <div class="">@item.Title</div>
+                <div class="">@item.Author</div>
+                <div class="">
+                    @if (loggedUser.Username != "admin")
+                    {
+                        <a href="/Books/Index?id=@item.Id">read</a>
+                    }
+                    else
+                    {
+                        <a href="/Books/Edit?id=@item.Id">edit</a>
+                        <a href="/Books/Share?id=@item.Id">recommend</a>
+                        <a href="/Books/Delete?id=@item.Id"
+                           onclick="return confirm('Delete Record?');">delete</a>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (loggedUser.Username != "admin")
+        {
+            <hr class="space" />
+            <div>
+                @foreach (Book item in Model.AllBooks)
+                {
+                    <div class="box">
+                        <div class="">@item.Title</div>
+                        <div class="">@item.Author</div>
+                        <div class="">
+                            <a href="/Books/Index?id=@item.Id">read</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="row pager">
+            @{
+                string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+                string action = this.ViewContext.RouteData.Values["action"].ToString();
+                int selectedIndex = 0;
+                if (Model.Pager.ItemsPerPage == 3)
+                {
+                    selectedIndex = 0;
+                }
+                else if (Model.Pager.ItemsPerPage == 5)
+                {
+                    selectedIndex = 1;
+                }
+                else if (Model.Pager.ItemsPerPage == 10)
+                {
+                    selectedIndex = 2;
+                }
+            }
+            <div class="col-3">
+                @for (int i = 0; i < Model.Pager.PagesCount; i++)
+                {
+                    <a href="/@controller/@action?Pager.Page=@(i+1)&Pager.ItemsPerPage=@Model.Pager.ItemsPerPage&Filter.Title=@Model.Filter.Title">
+                        @(i+1)
+                    </a>
+                }
+
+                <script>
+                function ddlItemsPerPage_OnChange() {
+
+                    let control = document.getElementById("ddlItemsPerPage");
+                    document.location.href = "/@controller/@action?Pager.ItemsPerPage=" + control.value + "&Filter.Title=@Model.Filter.Title";
+                }
+
+                window.addEventListener('load', (event) => {
+                    document.getElementById("ddlItemsPerPage").selectedIndex = @selectedIndex;
+                });
+                </script>
+                <select id="ddlItemsPerPage" onchange="ddlItemsPerPage_OnChange()">
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
